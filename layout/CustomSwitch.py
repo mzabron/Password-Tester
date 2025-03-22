@@ -1,12 +1,17 @@
+from kivy.properties import BooleanProperty
 from kivy.uix.widget import Widget
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.graphics import Color, RoundedRectangle, Ellipse
 from kivy.factory import Factory
 
 class CustomSwitch(ButtonBehavior, Widget):
+
+    active = BooleanProperty(False)
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.active = False
+        self.rect = None
+        self.knob = None
         self.size_hint = (None, None)
         self.size = (40, 20)
         self.bind(pos=self.update_graphics, size=self.update_graphics)
