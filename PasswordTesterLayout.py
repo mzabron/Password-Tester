@@ -7,6 +7,7 @@ class PasswordTesterLayout(BoxLayout):
         super().__init__()
         self.attack_method = None
         self.hash_method = None
+        self.target_password = None
         self.has_numbers = False
         self.has_uppercase = False
         self.has_lowercase = False
@@ -38,14 +39,15 @@ class PasswordTesterLayout(BoxLayout):
         print(f"Selected attack method: {self.attack_method}")
 
     def start_test(self):
-        password = self.ids.password_input.text
-        tester = LogicManager(
+        self.target_password = self.ids.password_input.text
+        logic_manager = LogicManager(
             has_numbers=self.has_numbers,
             has_uppercase=self.has_uppercase,
             has_lowercase=self.has_lowercase,
             has_special_chars=self.has_special_chars,
             hash_password=self.hash_password,
             hash_method=self.hash_method,
-            attack_method=self.attack_method
+            attack_method=self.attack_method,
+            target_password = self.target_password
         )
-        tester.run_test(password)
+        logic_manager.run_test()
