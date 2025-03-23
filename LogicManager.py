@@ -59,7 +59,7 @@ class LogicManager:
 
         return None
 
-    def dictionary_attac(self, target_password):
+    def dictionary_attack(self, target_password):
         start_time = time.time()
         tested_count = 0
 
