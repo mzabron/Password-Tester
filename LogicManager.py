@@ -22,6 +22,8 @@ class LogicManager:
 
         if self.attack_method == "Brute Force":
             self.brute_force(self.target_password)
+        elif self.attack_method == "Dictionary":
+            self.dictionary_attack(self.target_password)
 
     def brute_force(self, target_password):
         charset = ""
@@ -57,3 +59,21 @@ class LogicManager:
 
         return None
 
+    def dictionary_attac(self, target_password):
+        start_time = time.time()
+        tested_count = 0
+
+        with open("psswd1M.txt", "r", encoding="utf-8") as file:
+            for line in file:
+                attempt = line.strip()
+                tested_count += 1
+                elapsed_time = time.time() - start_time
+                self.ui_update(tested_count, elapsed_time)
+
+                print(f"Próba: {attempt}")
+                if attempt == target_password:
+                    print(f"Znaleziono hasło: {attempt}")
+                    return attempt
+
+        print("Hasła nie znaleziono.")
+        return None
