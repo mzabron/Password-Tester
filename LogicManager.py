@@ -26,6 +26,9 @@ class LogicManager:
             self.brute_force(self.target_password)
         elif self.attack_method == "Dictionary":
             self.dictionary_attack(self.target_password)
+        elif self.attack_method == "Combined":
+            self.combined_attack()
+
 
     def end_test(self):
         self.cancel_test = True
@@ -94,4 +97,59 @@ class LogicManager:
         self.update_ui(tested_count, elapsed_time, 'Password Not Found')
         self.end_test()
         return None
+
+    def dictionary_generator(self):
+        with open("psswd1M.txt", "r", encoding="utf-8") as file:
+            for line in file:
+                yield line.strip()
+
+    def common_modifications(self, base_password):
+        if self.has_numbers:
+            for i in range(1, 3):
+                for digits in itertools.product(string.digits, repeat=i):
+                    yield base_password + ''.join(digits)
+
+        if self.has_special_chars:
+            common_symbols = ["!", "?", "@", "#", "$"]
+            for sym in common_symbols:
+                yield base_password + sym
+
+        if self.has_numbers:
+            leet_map = str.maketrans("aAeEiIoOsS", "4433110055")
+            leet_version = base_password.translate(leet_map)
+            if leet_version != base_password:
+                yield leet_version
+
+        if len(base_password) > 1:
+            yield base_password + base_password[-1]
+
+        if self.has_uppercase and self.has_lowercase and base_password[0].islower():
+            yield base_password.capitalize()
+
+    def combined_attack(self):
+        start_time = time.time()
+        tested_count = 0
+
+        for word in self.dictionary_generator():
+            if self.cancel_test:
+                return
+            tested_count += 1
+            self.update_ui(tested_count, time.time() - start_time, word)
+            if word == self.target_password:
+                print(f"Znaleziono hasło: {word}")
+                self.end_test()
+                return
+
+            for variant in self.common_modifications(word):
+                if self.cancel_test:
+                    return
+                tested_count += 1
+                self.update_ui(tested_count, time.time() - start_time, variant)
+                if variant == self.target_password:
+                    print(f"Znaleziono hasło: {variant}")
+                    self.end_test()
+                    return
+
+        print("Hasło nie zostało znalezione.")
+        self.end_test()
 

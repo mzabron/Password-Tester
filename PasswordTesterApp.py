@@ -1,5 +1,5 @@
 from kivy.app import App
-from PasswordTesterLayout import PasswordTesterLayout
+from PasswordTesterController import PasswordTesterController
 
 
 class PasswordTesterApp(App):
@@ -7,4 +7,4 @@ class PasswordTesterApp(App):
 
         self.title = "Password Tester"
 
-        return PasswordTesterLayout()
+        return PasswordTesterController()

@@ -9,7 +9,7 @@ from threading import Thread
 import re
 
 
-class PasswordTesterLayout(BoxLayout):
+class PasswordTesterController(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__()
         self.logic_manager = None
@@ -88,6 +88,10 @@ class PasswordTesterLayout(BoxLayout):
     def start_test(self):
         if self.logic_manager:
             self.show_error_popup("Test is already running.")
+            return
+
+        if not self.attack_method:
+            self.show_error_popup("Please select an attack method before starting the test.")
             return
 
         self.target_password = self.ids.password_input.text
