@@ -68,9 +68,10 @@ class PasswordTesterLayout(BoxLayout):
             return False
         return True
 
-    def update_ui(self, tested_count, elapsed_time):
+    def update_ui(self, tested_count, elapsed_time, last_password):
         self.ids.tested_count.text = str(tested_count)
         self.ids.elapsed_time.text = f"{elapsed_time:.2f} s"
+        self.ids.tested_password.text = last_password
 
     def update_hash_method(self, method):
         if method == "Select Hashing Method":
@@ -97,7 +98,7 @@ class PasswordTesterLayout(BoxLayout):
             hash_method=self.hash_method,
             attack_method=self.attack_method,
             target_password = self.target_password,
-            ui_update = self.update_ui
+            update_ui = self.update_ui
         )
 
         test_thread = Thread(target=logic_manager.run_test)

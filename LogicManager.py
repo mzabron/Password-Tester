@@ -4,7 +4,7 @@ import time
 
 
 class LogicManager:
-    def __init__(self, has_numbers, has_uppercase, has_lowercase, has_special_chars, hash_password, hash_method, attack_method, target_password, ui_update):
+    def __init__(self, has_numbers, has_uppercase, has_lowercase, has_special_chars, hash_password, hash_method, attack_method, target_password, update_ui):
         self.has_numbers = has_numbers
         self.has_uppercase = has_uppercase
         self.has_lowercase = has_lowercase
@@ -13,7 +13,7 @@ class LogicManager:
         self.hash_method = hash_method
         self.attack_method = attack_method
         self.target_password = target_password
-        self.ui_update = ui_update
+        self.update_ui = update_ui
 
     def run_test(self):
         print(f"Criteria: Numbers: {self.has_numbers}, Uppercase: {self.has_uppercase}, Lowercase: {self.has_lowercase}, Special: {self.has_special_chars}")
@@ -46,7 +46,7 @@ class LogicManager:
                 for attempt in itertools.product(charset, repeat=length):
                     tested_count += 1
                     elapsed_time = time.time() - start_time
-                    self.ui_update(tested_count, elapsed_time)
+                    self.update_ui(tested_count, elapsed_time, ''.join(attempt))
                     yield ''.join(attempt)
                 length += 1
 
@@ -68,7 +68,7 @@ class LogicManager:
                 attempt = line.strip()
                 tested_count += 1
                 elapsed_time = time.time() - start_time
-                self.ui_update(tested_count, elapsed_time)
+                self.update_ui(tested_count, elapsed_time, ''.join(attempt))
 
                 print(f"Próba: {attempt}")
                 if attempt == target_password:
@@ -76,4 +76,5 @@ class LogicManager:
                     return attempt
 
         print("Hasła nie znaleziono.")
+        self.update_ui(tested_count, elapsed_time,'Password Not Found')
         return None
