@@ -12,6 +12,7 @@ import re
 class PasswordTesterLayout(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__()
+        self.logic_manager = None
         self.attack_method = None
         self.hash_method = None
         self.target_password = None
@@ -85,11 +86,15 @@ class PasswordTesterLayout(BoxLayout):
         print(f"Selected attack method: {self.attack_method}")
 
     def start_test(self):
+        if self.logic_manager:
+            self.show_error_popup("Test is already running.")
+            return
+
         self.target_password = self.ids.password_input.text
         if not self.validate_password(self.target_password):
             return
 
-        logic_manager = LogicManager(
+        self.logic_manager = LogicManager(
             has_numbers=self.has_numbers,
             has_uppercase=self.has_uppercase,
             has_lowercase=self.has_lowercase,
@@ -98,8 +103,19 @@ class PasswordTesterLayout(BoxLayout):
             hash_method=self.hash_method,
             attack_method=self.attack_method,
             target_password = self.target_password,
-            update_ui = self.update_ui
+            update_ui = self.update_ui,
+            update_test = self.end_test
         )
-
-        test_thread = Thread(target=logic_manager.run_test)
+        test_thread = Thread(target=self.logic_manager.run_test)
         test_thread.start()
+        self.ids.cancel_button.disabled = False
+
+    def cancel_test(self):
+        if self.logic_manager:
+            self.logic_manager.cancel_test = True
+            self.logic_manager = None
+        self.ids.cancel_button.disabled = True
+
+    def end_test(self):
+        self.logic_manager = None
+        self.ids.cancel_button.disabled = True

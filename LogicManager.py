@@ -4,7 +4,7 @@ import time
 
 
 class LogicManager:
-    def __init__(self, has_numbers, has_uppercase, has_lowercase, has_special_chars, hash_password, hash_method, attack_method, target_password, update_ui):
+    def __init__(self, has_numbers, has_uppercase, has_lowercase, has_special_chars, hash_password, hash_method, attack_method, target_password, update_ui, update_test):
         self.has_numbers = has_numbers
         self.has_uppercase = has_uppercase
         self.has_lowercase = has_lowercase
@@ -14,6 +14,8 @@ class LogicManager:
         self.attack_method = attack_method
         self.target_password = target_password
         self.update_ui = update_ui
+        self.update_test = update_test
+        self.cancel_test = False
 
     def run_test(self):
         print(f"Criteria: Numbers: {self.has_numbers}, Uppercase: {self.has_uppercase}, Lowercase: {self.has_lowercase}, Special: {self.has_special_chars}")
@@ -24,6 +26,10 @@ class LogicManager:
             self.brute_force(self.target_password)
         elif self.attack_method == "Dictionary":
             self.dictionary_attack(self.target_password)
+
+    def end_test(self):
+        self.cancel_test = True
+        self.update_test()
 
     def brute_force(self, target_password):
         charset = ""
@@ -42,8 +48,11 @@ class LogicManager:
             length = 1
             start_time = time.time()
             tested_count = 0
-            while True:
+            while not self.cancel_test:
                 for attempt in itertools.product(charset, repeat=length):
+                    if self.cancel_test:
+                        print("Przerwano brute force.")
+                        return
                     tested_count += 1
                     elapsed_time = time.time() - start_time
                     self.update_ui(tested_count, elapsed_time, ''.join(attempt))
@@ -55,6 +64,7 @@ class LogicManager:
 
             if attempt == target_password:
                 print(f"Znaleziono hasło: {attempt}")
+                self.end_test()
                 return attempt
 
         return None
@@ -65,16 +75,23 @@ class LogicManager:
 
         with open("psswd1M.txt", "r", encoding="utf-8") as file:
             for line in file:
+                if self.cancel_test:
+                    print("Przerwano atak słownikowy.")
+                    self.end_test()
+                    return
                 attempt = line.strip()
                 tested_count += 1
                 elapsed_time = time.time() - start_time
-                self.update_ui(tested_count, elapsed_time, ''.join(attempt))
+                self.update_ui(tested_count, elapsed_time, attempt)
 
                 print(f"Próba: {attempt}")
                 if attempt == target_password:
                     print(f"Znaleziono hasło: {attempt}")
+                    self.end_test()
                     return attempt
 
         print("Hasła nie znaleziono.")
-        self.update_ui(tested_count, elapsed_time,'Password Not Found')
+        self.update_ui(tested_count, elapsed_time, 'Password Not Found')
+        self.end_test()
         return None
+
