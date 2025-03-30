@@ -21,11 +21,12 @@ class CustomSwitch(ButtonBehavior, Widget):
         self.canvas.clear()
         with self.canvas:
             Color(0.7, 0.7, 0.7, 1) if not self.active else Color(0, 0.8, 0, 1)
-            self.rect = RoundedRectangle(pos=self.pos, size=self.size, radius=[10])
+            self.rect = RoundedRectangle(pos=self.pos, size=self.size, radius=[self.height / 2])
 
             Color(1, 1, 1, 1)
-            x_offset = self.pos[0] + (self.width - 18 if self.active else 2)
-            self.knob = Ellipse(pos=(x_offset, self.pos[1] + 3), size=(14, 14))
+            knob_size = self.height * 0.7
+            x_offset = self.pos[0] + (self.width - knob_size - 4 if self.active else 4)
+            self.knob = Ellipse(pos=(x_offset, self.pos[1] + (self.height - knob_size) / 2), size=(knob_size, knob_size))
 
     def update_graphics(self, *args):
         self.draw_switch()
