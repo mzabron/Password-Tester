@@ -74,7 +74,7 @@ class LogicManager:
         start_time = time.time()
         tested_count = 0
 
-        with open("psswd1M.txt", "r", encoding="utf-8") as file:
+        with open("data/psswd1M.txt", "r", encoding="utf-8") as file:
             for line in file:
                 if self.cancel_test:
                     print("Przerwano atak słownikowy.")
@@ -97,7 +97,7 @@ class LogicManager:
         return None
 
     def dictionary_generator(self):
-        with open("psswd1M.txt", "r", encoding="utf-8") as file:
+        with open("data/psswd1M.txt", "r", encoding="utf-8") as file:
             for line in file:
                 yield line.strip()
 
