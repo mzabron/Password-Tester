@@ -40,7 +40,7 @@ A downloadable `.apk` version for Android is available here: [Password Tester (.
 
 - Option to cancel the guessing process at any time.
 
-### Overview
+## Overview
 
 <p align="center">
   <img src="data/demo.gif" alt="Password Tester Demo" style="width:50%;">
